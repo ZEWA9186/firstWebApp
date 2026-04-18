@@ -1,0 +1,38 @@
+### Скомпилированный код (Maven) ###
+target/
+*.class
+*.war
+*.ear
+*.jar
+
+### Логи ###
+*.log
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### macOS (Раз ты на M4) ###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+### Зависимости и обертки ###
+.mvn/
+mvnw
+mvnw.cmd
+
+### Полезные мелочи ###
+HELP.md
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+
+### VS Code ###
+.vscode/
