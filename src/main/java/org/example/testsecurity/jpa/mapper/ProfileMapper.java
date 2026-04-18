@@ -1,7 +1,7 @@
 package org.example.testsecurity.jpa.mapper;
 
 import org.example.testsecurity.dto.RequestRegistrationDTO;
-import org.example.testsecurity.dto.UserAuthResponse;
+import org.example.testsecurity.response.UserAuthResponse;
 import org.example.testsecurity.jpa.Profile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

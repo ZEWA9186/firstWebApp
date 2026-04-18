@@ -1,7 +1,7 @@
 package org.example.testsecurity.service;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.example.testsecurity.constant.RoleConstants;
 import org.example.testsecurity.dto.RequestLoginDTO;
 import org.example.testsecurity.jpa.Profile;
 import org.example.testsecurity.jpa.Role;
@@ -10,7 +10,7 @@ import org.example.testsecurity.repository.ProfileRepository;
 import org.example.testsecurity.repository.RoleRepository;
 import org.example.testsecurity.response.errors_code.AuthError;
 import org.example.testsecurity.dto.RequestRegistrationDTO;
-import org.example.testsecurity.dto.UserAuthResponse;
+import org.example.testsecurity.response.UserAuthResponse;
 import org.example.testsecurity.exception.AuthException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class AuthService {
         Profile profile = profileMapper.toProfile(dto);
         profile.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(
+        Role role = roleRepository.findByName(RoleConstants.ROLE_USER).orElseThrow(
                 () -> new IllegalStateException("Default role is not defined")
         );
 

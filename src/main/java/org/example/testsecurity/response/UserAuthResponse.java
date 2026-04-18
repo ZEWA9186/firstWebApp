@@ -1,4 +1,4 @@
-package org.example.testsecurity.dto;
+package org.example.testsecurity.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

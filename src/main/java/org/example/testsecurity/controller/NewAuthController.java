@@ -2,23 +2,25 @@ package org.example.testsecurity.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.testsecurity.annotation.ApiPrefix;
 import org.example.testsecurity.dto.RequestLoginDTO;
 import org.example.testsecurity.dto.RequestRegistrationDTO;
-import org.example.testsecurity.dto.UserAuthResponse;
+import org.example.testsecurity.response.UserAuthResponse;
 import org.example.testsecurity.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+@ApiPrefix
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Controller
 public class NewAuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/auth")
+    @PostMapping("/reg")
     public ResponseEntity<UserAuthResponse> register(
             @RequestBody @Valid RequestRegistrationDTO requestRegistrationDTO
     ) {
