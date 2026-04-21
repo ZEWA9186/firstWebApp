@@ -7,6 +7,7 @@ import org.example.testsecurity.response.errors_code.AuthError;
 import org.example.testsecurity.response.errors_code.GeneralError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -64,5 +65,15 @@ public class GlobalExceptionHandler {
                         .success(false)
                         .build()
         );
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        log.error(ex.getMessage());
+
+        ApiError apiError = ApiError.builder()
+                .message(ex.getMessage())
+                .code(ex.getName())
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(apiError));
     }
 }

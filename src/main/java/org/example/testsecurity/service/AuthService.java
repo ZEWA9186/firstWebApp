@@ -12,6 +12,7 @@ import org.example.testsecurity.response.errors_code.AuthError;
 import org.example.testsecurity.dto.RequestRegistrationDTO;
 import org.example.testsecurity.response.UserAuthResponse;
 import org.example.testsecurity.exception.AuthException;
+import org.example.testsecurity.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ProfileMapper profileMapper;
     private final RoleRepository roleRepository;
+    private final JwtService jwtService;
 
     public UserAuthResponse register(RequestRegistrationDTO dto) {
         if(profileRepository.existsByEmail(dto.getEmail())) {
@@ -41,7 +43,7 @@ public class AuthService {
 
         profileRepository.save(profile);
         UserAuthResponse response = profileMapper.toUserAuthResponse(profile);
-        String token = "";
+        String token = jwtService.generateJwtToken(profile);
         response.setToken(token);
         return response;
 
@@ -56,7 +58,7 @@ public class AuthService {
         }
 
         UserAuthResponse response = profileMapper.toUserAuthResponse(profile);
-        String token = "";
+        String token = jwtService.generateJwtToken(profile);
         response.setToken(token);
 
         return response;
