@@ -2,6 +2,7 @@ package org.example.testsecurity.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.example.testsecurity.config.JwtConfig;
@@ -10,13 +11,13 @@ import org.example.testsecurity.jpa.Role;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Service
 public class JwtService {
+
     private final JwtConfig jwtConfig;
 
     public String generateJwtToken(Profile profile) {
@@ -34,7 +35,7 @@ public class JwtService {
     }
 
     public String extractEmail(String token) {
-        return getClaimsFromToken(token).getSubject();
+        return extractClaim(token, Claims::getSubject);
     }
 
     public boolean isTokenExpired(String token) {
@@ -54,14 +55,13 @@ public class JwtService {
                 .getPayload();
     }
 
-    public <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
     private SecretKey getSecretKey() {
-//      return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecretKey()));
-        byte[] keyBytes = jwtConfig.getSecretKey().getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+        byte[] encodedKey = Decoders.BASE64.decode(jwtConfig.getSecretKey());
+        return Keys.hmacShaKeyFor(encodedKey);
     }
 }

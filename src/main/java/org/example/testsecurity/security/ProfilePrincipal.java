@@ -1,5 +1,6 @@
 package org.example.testsecurity.security;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.testsecurity.jpa.Profile;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-
+@Getter
 @RequiredArgsConstructor
 public class ProfilePrincipal implements UserDetails {
 
@@ -25,15 +26,12 @@ public class ProfilePrincipal implements UserDetails {
     public String getPassword() {
         return profile.getPassword();
     }
-    //Путаница с Username и Email, указывать identityKey
+
     @Override
     public String getUsername() {
         return profile.getEmail();
     }
 
-
-
-    //Методы значение которых я пойму позже))
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();

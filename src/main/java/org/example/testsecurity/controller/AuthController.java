@@ -25,14 +25,19 @@ public class AuthController {
             @RequestBody @Valid RequestRegistrationDTO requestRegistrationDTO
     ) {
         var data = authService.register(requestRegistrationDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(data));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(data));
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<UserAuthResponse>> login(
             @RequestBody @Valid RequestLoginDTO requestLoginDTO
-            ){
+    ) {
         var data = authService.login(requestLoginDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(data));
+
+        return ResponseEntity
+                .ok(ApiResponse.success(data));
     }
 }

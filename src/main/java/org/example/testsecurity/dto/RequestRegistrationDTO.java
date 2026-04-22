@@ -19,6 +19,7 @@ public class RequestRegistrationDTO {
             message = "Username can only contain letters, numbers, dots, underscores and hyphens"
     )
     private String username;
+
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Invalid email format")
     private String email;

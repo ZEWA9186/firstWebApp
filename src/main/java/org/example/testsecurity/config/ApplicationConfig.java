@@ -12,12 +12,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
+
     private final ProfileRepository profileRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> profileRepository.findByEmail(email)
                 .map(ProfilePrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException(AuthError.INVALID_CREDENTIALS.getError()));
+                .orElseThrow(() -> new UsernameNotFoundException(AuthError.INVALID_CREDENTIALS.name()));
     }
 }
