@@ -25,12 +25,10 @@ public class GlobalExceptionHandler {
 
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
-                .code(ex.getAuthError().name())
+                .code(ex.getErrorCode().name())
                 .build();
-        if (ex.getAuthError().name().equals(AuthError.REGISTRATION_FAILED.name())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(apiError));
-        }
-        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(apiError));
+
+        return ResponseEntity.status(ex.getStatus()).body(ApiResponse.error(apiError));
     }
 
     @ExceptionHandler(Exception.class)
@@ -55,7 +53,7 @@ public class GlobalExceptionHandler {
         );
 
         ApiError apiError = ApiError.builder()
-                .message(GeneralError.VALIDATION_ERROR.getError())
+                .message(GeneralError.VALIDATION_ERROR.getErrorCode())
                 .code(GeneralError.VALIDATION_ERROR.name())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

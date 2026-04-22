@@ -3,12 +3,18 @@ package org.example.testsecurity.response.errors_code;
 import lombok.Getter;
 
 @Getter
-public enum GeneralError {
-    VALIDATION_ERROR("Data validation error");
+public enum GeneralError implements ErrorCode {
+    VALIDATION_ERROR("Data validation error"),
+    INTERNAL_SERVER_ERROR("Internal server error");
 
-    private final String error;
+    private final String errorCode;
 
-    GeneralError(String error) {
-        this.error = error;
+    GeneralError(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    @Override
+    public String getCode() {
+        return errorCode;
     }
 }
