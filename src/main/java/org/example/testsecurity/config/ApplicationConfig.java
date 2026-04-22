@@ -18,6 +18,6 @@ public class ApplicationConfig {
     public UserDetailsService userDetailsService() {
         return email -> profileRepository.findByEmail(email)
                 .map(ProfilePrincipal::new)
-                .orElseThrow(() -> new UsernameNotFoundException(AuthError.INVALID_CREDENTIALS.getError()));
+                .orElseThrow(() -> new UsernameNotFoundException(AuthError.INVALID_CREDENTIALS.name()));
     }
 }
