@@ -1,16 +1,27 @@
 package org.example.testsecurity.exception;
 
 import lombok.Getter;
-import org.example.testsecurity.response.errors_code.AuthError;
+import org.example.testsecurity.response.errors_code.ErrorCode;
+import org.springframework.http.HttpStatus;
 
 
 @Getter
 public class AuthException extends RuntimeException {
 
-    private final AuthError authError;
+    private final ErrorCode errorCode;
+    private final HttpStatus status;
+    private final String customMessage;
 
-    public AuthException(AuthError authError) {
-        super(authError.getError());
-        this.authError = authError;
+    public AuthException(ErrorCode errorCode, HttpStatus status, String message) {
+        super(message);
+        this.errorCode = errorCode;
+        this.status = status;
+        this.customMessage = message;
+    }
+    public AuthException(ErrorCode errorCode, HttpStatus status) {
+        super(errorCode.getErrorCode());
+        this.errorCode = errorCode;
+        this.status = status;
+        this.customMessage = errorCode.getErrorCode();
     }
 }

@@ -1,5 +1,6 @@
 package org.example.testsecurity.security;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.testsecurity.jpa.Profile;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-
+@Getter
 @RequiredArgsConstructor
 public class ProfilePrincipal implements UserDetails {
 

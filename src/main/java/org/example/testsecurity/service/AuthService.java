@@ -12,7 +12,13 @@ import org.example.testsecurity.response.errors_code.AuthError;
 import org.example.testsecurity.dto.RequestRegistrationDTO;
 import org.example.testsecurity.response.UserAuthResponse;
 import org.example.testsecurity.exception.AuthException;
+import org.example.testsecurity.response.errors_code.GeneralError;
 import org.example.testsecurity.security.JwtService;
+import org.example.testsecurity.security.ProfilePrincipal;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +32,11 @@ public class AuthService {
     private final ProfileMapper profileMapper;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     public UserAuthResponse register(RequestRegistrationDTO dto) {
         if(profileRepository.existsByEmail(dto.getEmail())) {
-            throw new AuthException(AuthError.REGISTRATION_FAILED);
+            throw new AuthException(AuthError.REGISTRATION_FAILED, HttpStatus.CONFLICT);
         }
 
         Profile profile = profileMapper.toProfile(dto);
@@ -50,17 +57,23 @@ public class AuthService {
     }
 
     public UserAuthResponse login(RequestLoginDTO dto) {
-        Profile profile = profileRepository.findByEmail(dto.getEmail()).orElseThrow(
-                () -> new AuthException(AuthError.INVALID_CREDENTIALS)
+
+         Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                dto.getEmail(),
+                dto.getPassword()
+                )
         );
-        if(!passwordEncoder.matches(dto.getPassword(), profile.getPassword())) {
-            throw new AuthException(AuthError.INVALID_CREDENTIALS);
+        if(authentication.getPrincipal() instanceof ProfilePrincipal profilePrincipal) {
+            Profile profile = profilePrincipal.getProfile();
+
+            UserAuthResponse response = profileMapper.toUserAuthResponse(profile);
+            String token = jwtService.generateJwtToken(profile);
+            response.setToken(token);
+
+            return response;
+        } else {
+            throw new AuthException(GeneralError.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        UserAuthResponse response = profileMapper.toUserAuthResponse(profile);
-        String token = jwtService.generateJwtToken(profile);
-        response.setToken(token);
-
-        return response;
     }
 }
