@@ -2,6 +2,7 @@ package org.example.testsecurity.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.testsecurity.security.JwtFilter;
+import org.example.testsecurity.security.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +26,8 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
-    private final JwtFilter jwtFilter;
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
@@ -36,7 +39,7 @@ public class SpringSecurityConfig {
                         session -> session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
@@ -66,5 +69,10 @@ public class SpringSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtService, userDetailsService);
     }
 }

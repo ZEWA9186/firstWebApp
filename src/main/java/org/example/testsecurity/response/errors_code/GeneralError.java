@@ -13,8 +13,4 @@ public enum GeneralError implements ErrorCode {
         this.errorCode = errorCode;
     }
 
-    @Override
-    public String getCode() {
-        return errorCode;
-    }
 }

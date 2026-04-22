@@ -7,6 +7,7 @@ import org.example.testsecurity.response.errors_code.AuthError;
 import org.example.testsecurity.response.errors_code.GeneralError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -64,6 +65,7 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleUsernameNotFound(UsernameNotFoundException ex) {
         log.error(ex.getMessage());
@@ -71,6 +73,17 @@ public class GlobalExceptionHandler {
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
                 .code(ex.getName())
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(apiError));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<?>> handleBadCredentialsException(BadCredentialsException ex) {
+        log.error(ex.getMessage());
+
+        ApiError apiError = ApiError.builder()
+                .message(AuthError.INVALID_CREDENTIALS.getErrorCode())
+                .code(AuthError.INVALID_CREDENTIALS.name())
                 .build();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(apiError));
     }

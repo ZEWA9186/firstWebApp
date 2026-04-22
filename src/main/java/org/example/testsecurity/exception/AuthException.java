@@ -19,9 +19,9 @@ public class AuthException extends RuntimeException {
         this.customMessage = message;
     }
     public AuthException(ErrorCode errorCode, HttpStatus status) {
-        super(errorCode.getCode());
+        super(errorCode.getErrorCode());
         this.errorCode = errorCode;
         this.status = status;
-        this.customMessage = errorCode.getCode();
+        this.customMessage = errorCode.getErrorCode();
     }
 }

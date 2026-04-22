@@ -12,9 +12,4 @@ public enum AuthError implements ErrorCode {
     AuthError(String error) {
         this.errorCode = error;
     }
-
-    @Override
-    public String getCode() {
-        return errorCode;
-    }
 }
