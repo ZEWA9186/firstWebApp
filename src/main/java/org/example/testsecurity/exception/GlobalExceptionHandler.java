@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ApiResponse<?>> handleUserNotFound(AuthException ex) {
-        log.error(ex.getMessage());
+        log.error(ex.getMessage(), ex.getCause());
 
         ApiError apiError = ApiError.builder()
                 .message(ex.getMessage())
