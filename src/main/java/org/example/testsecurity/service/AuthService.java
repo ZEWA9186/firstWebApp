@@ -17,6 +17,7 @@ import org.example.testsecurity.security.JwtService;
 import org.example.testsecurity.security.ProfilePrincipal;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +47,7 @@ public class AuthService {
         profile.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Role role = roleRepository.findByName(RoleConstants.ROLE_USER).orElseThrow(
-                () -> new IllegalStateException("Default role is not defined")
+                () -> new AuthException(GeneralError.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR, "There is no ROLE_USER in DB")
         );
 
         profile.setRoles(Set.of(role));
@@ -60,14 +61,15 @@ public class AuthService {
     }
 
     public UserAuthResponse login(RequestLoginDTO dto) {
-         Authentication authentication = authenticationManager.authenticate(
+        try {
+            Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                 dto.getEmail(),
                 dto.getPassword()
                 )
-        );
+            );
 
-        if(authentication.getPrincipal() instanceof ProfilePrincipal profilePrincipal) {
+            ProfilePrincipal profilePrincipal = (ProfilePrincipal) authentication.getPrincipal();
             Profile profile = profilePrincipal.getProfile();
 
             UserAuthResponse response = profileMapper.toUserAuthResponse(profile);
@@ -75,8 +77,11 @@ public class AuthService {
             response.setToken(token);
 
             return response;
-        }
 
-        throw new AuthException(GeneralError.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (BadCredentialsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AuthException(GeneralError.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR, e);
+        }
     }
 }
